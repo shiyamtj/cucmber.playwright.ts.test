@@ -4,10 +4,10 @@ import {
   Before,
   After,
   ITestCaseHookParameter,
+  setDefaultTimeout,
 } from '@cucumber/cucumber'
-import { page, context } from './browser'
-import { startBrowser, closeBrowser } from './browser'
 import path from 'path'
+import { CustomWorld } from './world'
 
 function getUniqueTraceName(
   scenarioName: string,
@@ -21,44 +21,59 @@ function getUniqueTraceName(
   return `${sanitizedName}_${browserType}_${viewportName}`
 }
 
+setDefaultTimeout(120000) // Increase timeout to handle long-running operations
+
 BeforeAll(async () => {
-  await startBrowser()
+  console.log('Starting all tests...')
 })
 
 AfterAll(async () => {
-  await closeBrowser()
+  console.log('All tests completed.')
 })
 
-Before(async function (this: any, scenario: ITestCaseHookParameter) {
-  if (process.env.TRACE_ENABLED === 'true') {
-    await context.tracing.start({
-      screenshots: true,
-      snapshots: true,
-      sources: true,
-    })
+Before(async function (this: CustomWorld, scenario: ITestCaseHookParameter) {
+  try {
+    await this.launchBrowser()
+
+    if (process.env.TRACE_ENABLED === 'true') {
+      await this.context.tracing.start({
+        screenshots: true,
+        snapshots: true,
+        sources: true,
+      })
+    }
+  } catch (error) {
+    console.error('Error in Before hook:', error)
+    throw error
   }
 })
 
-After(async function (this: any, scenario: ITestCaseHookParameter) {
-  if (process.env.TRACE_ENABLED === 'true') {
-    const browserType: string = process.env.BROWSER || 'chromium'
-    const viewportName: string = process.env.VIEWPORT || 'desktop'
-    const traceName = getUniqueTraceName(
-      scenario.pickle.name,
-      browserType,
-      viewportName
-    )
-    const tracePath = path.join(
-      __dirname,
-      '..',
-      '..',
-      'reports',
-      'traces',
-      `${traceName}.zip`
-    )
-    await context.tracing.stop({ path: tracePath })
-  }
+After(async function (this: CustomWorld, scenario: ITestCaseHookParameter) {
+  try {
+    if (process.env.TRACE_ENABLED === 'true') {
+      const browserType: string = process.env.BROWSER || 'chromium'
+      const viewportName: string = process.env.VIEWPORT || 'desktop'
+      const traceName = getUniqueTraceName(
+        scenario.pickle.name,
+        browserType,
+        viewportName
+      )
+      const tracePath = path.join(
+        __dirname,
+        '..',
+        '..',
+        'reports',
+        'traces',
+        `${traceName}.zip`
+      )
+      await this.context.tracing.stop({ path: tracePath })
+    }
 
-  const screenshot = await page.screenshot()
-  return this.attach(screenshot, 'image/png')
+    const screenshot = await this.page.screenshot()
+    this.attach(screenshot, 'image/png')
+  } catch (error) {
+    console.error('Error in After hook:', error)
+  } finally {
+    await this.closeBrowser()
+  }
 })
