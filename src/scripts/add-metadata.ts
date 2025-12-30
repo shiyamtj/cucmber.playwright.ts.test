@@ -8,8 +8,7 @@ const reportsDir = path.join(__dirname, '..', '..', 'reports')
 console.log('Files in report directory:', fs.readdirSync(reportsDir))
 
 const jsonDir = path.join(__dirname, '..', '..', 'reports', 'json')
-console.log('Adding metadata to results in directory:', jsonDir)
-console.log('Files in report directory:', fs.readdirSync(jsonDir))
+console.log('Files in results json directory:', fs.readdirSync(jsonDir))
 
 const files = fs.readdirSync(jsonDir).filter((file) => file.endsWith('.json'))
 
@@ -20,7 +19,6 @@ files.forEach((file) => {
 
   const versionFilePath = path.join(
     reportsDir,
-    '..',
     `${browserName.toLowerCase()}.version`
   )
 
