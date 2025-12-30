@@ -8,7 +8,7 @@ import {
   chromium,
 } from '@playwright/test'
 import fs from 'fs-extra'
-import path from 'path/win32'
+import path from 'path'
 
 const viewports = {
   desktop: { width: 1920, height: 1080 },
