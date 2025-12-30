@@ -55,13 +55,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: multiple-cucumber-html-${{ github.run_id }}
-          path: reports
+          path: reports/html
 
       - name: Download cucumber-html-${{ github.run_id }}
         uses: actions/download-artifact@v4
         with:
           name: cucumber-html-${{ github.run_id }}
-          path: reports
+          path: reports/cucumber-html
 
       - name: Publish HTML report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
