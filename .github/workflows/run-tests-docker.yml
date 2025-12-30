@@ -13,6 +13,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
+        with:
+          ref: gh-pages
+          path: reports-history/
+
+      - name: Checkout code
+        uses: actions/checkout@v5
 
       - name: Build docker image
         run: docker build -t playwright-docker .
@@ -54,19 +60,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-        with:
-          ref: gh-pages
-          path: reports/
 
       - name: Download reports
         uses: actions/download-artifact@v4
         with:
           name: github-pages-reports-${{ github.run_id }}
-          path: reports/
+          path: reports-history
 
       - name: Publish HTML report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: reports
+          publish_dir: reports-history
           publish_branch: gh-pages
