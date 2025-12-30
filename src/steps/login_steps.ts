@@ -1,6 +1,6 @@
 import { Given, When, Then } from '@cucumber/cucumber'
-import { expect, Page } from '@playwright/test'
-import { CustomWorld } from './world'
+import { expect } from '@playwright/test'
+import { CustomWorld } from '../support/world'
 
 Given('I am on the Saucedemo login page', async function (this: CustomWorld) {
   await this.page.goto('https://www.saucedemo.com/')

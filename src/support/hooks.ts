@@ -8,6 +8,7 @@ import {
 } from '@cucumber/cucumber'
 import path from 'path'
 import { CustomWorld } from './world'
+import { logger } from '../support/logger'
 
 function getUniqueTraceName(
   scenarioName: string,
@@ -24,11 +25,11 @@ function getUniqueTraceName(
 setDefaultTimeout(120000) // Increase timeout to handle long-running operations
 
 BeforeAll(async () => {
-  console.log('Starting all tests...')
+  logger.info('Starting all tests...')
 })
 
 AfterAll(async () => {
-  console.log('All tests completed.')
+  logger.success('All tests completed.')
 })
 
 Before(async function (this: CustomWorld, scenario: ITestCaseHookParameter) {
@@ -43,7 +44,7 @@ Before(async function (this: CustomWorld, scenario: ITestCaseHookParameter) {
       })
     }
   } catch (error) {
-    console.error('Error in Before hook:', error)
+    logger.error('Error in Before hook:', error)
     throw error
   }
 })
@@ -72,7 +73,7 @@ After(async function (this: CustomWorld, scenario: ITestCaseHookParameter) {
     const screenshot = await this.page.screenshot()
     this.attach(screenshot, 'image/png')
   } catch (error) {
-    console.error('Error in After hook:', error)
+    logger.error('Error in After hook:', error)
   } finally {
     await this.closeBrowser()
   }

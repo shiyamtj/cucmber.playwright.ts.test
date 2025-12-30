@@ -13,8 +13,8 @@
     "test:tablet": "cross-env VIEWPORT=tablet cucumber-js --format json:reports/json/chromium-tablet.json --format summary --format progress",
     "test:mobile": "cross-env VIEWPORT=mobile BROWSER=webkit cucumber-js --format json:reports/json/webkit-mobile.json --format summary --format progress",
     "test:parallel": "npm-run-all --parallel test:chromium test:firefox test:webkit test:tablet test:mobile",
-    "add-metadata": "node src/steps/add-metadata.js",
-    "report": "node src/steps/report.js",
+    "add-metadata": "node src/scripts/add-metadata.js",
+    "report": "node src/scripts/report.js",
     "test": "yarn pretest && yarn test:parallel && yarn add-metadata && yarn report",
     "pretest": "npm run clean:reports"
   },
@@ -44,5 +44,8 @@
     "npm-run-all": "^4.1.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2"
   }
 }

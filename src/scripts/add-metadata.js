@@ -1,18 +1,17 @@
 const fs = require('fs-extra')
 const path = require('path')
 
-const reportsDir = path.join(__dirname, '..', '..', 'reports', 'json')
-console.log('Adding metadata to reports in directory:', reportsDir)
-// console.log available files in the reports directory
-const fileTemp = fs.readdirSync(reportsDir)
-console.log('Files in report directory:', fileTemp)
+const reportsDir = path.join(__dirname, '..', '..', 'reports')
+console.log('Files in report directory:', fs.readdirSync(reportsDir))
 
-const files = fs
-  .readdirSync(reportsDir)
-  .filter((file) => file.endsWith('.json'))
+const jsonDir = path.join(__dirname, '..', '..', 'reports', 'json')
+console.log('Adding metadata to results in directory:', jsonDir)
+console.log('Files in report directory:', fs.readdirSync(jsonDir))
+
+const files = fs.readdirSync(jsonDir).filter((file) => file.endsWith('.json'))
 
 files.forEach((file) => {
-  const filePath = path.join(reportsDir, file)
+  const filePath = path.join(jsonDir, file)
   const report = fs.readJsonSync(filePath)
   const [browserName, viewportName] = path.basename(file, '.json').split('-')
 

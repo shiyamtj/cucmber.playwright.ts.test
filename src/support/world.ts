@@ -9,6 +9,7 @@ import {
 } from '@playwright/test'
 import fs from 'fs-extra'
 import path from 'path'
+import { logger } from './logger'
 
 const viewports = {
   desktop: { width: 1920, height: 1080 },
@@ -45,23 +46,19 @@ export class CustomWorld extends World {
     }
 
     const version = this.browser.version()
-
     const reportDir = path.join(__dirname, '..', '..', 'reports')
-    console.log('Browser Type:', browserType)
-    console.log('Browser Version:', version)
-    console.log('Headless Mode:', headless)
-    console.log('Viewport:', viewportName)
-    console.log('Report Directory:', reportDir)
+
+    // all logs into one line
+    logger.info(
+      `Browser Type: ${browserType} | Browser Version: ${version} | Headless Mode: ${headless} | Viewport: ${viewportName}`
+    )
+    logger.info('Report Directory:', reportDir)
 
     fs.ensureDirSync(reportDir)
     fs.writeFileSync(
       path.join(reportDir, `${browserType.toLowerCase()}.version`),
       version
     )
-
-    // console.log available files in the reports directory
-    const files = fs.readdirSync(reportDir)
-    console.log('Files in report directory:', files)
 
     this.context = await this.browser.newContext({ viewport })
     this.page = await this.context.newPage()
